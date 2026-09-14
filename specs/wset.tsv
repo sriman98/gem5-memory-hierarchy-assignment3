@@ -1,0 +1,11 @@
+# wset: name\tgem5-options\tscript\tconfig-arguments
+wset_16KiB_chase	NONE	memhier	--cmd bin/chase:16:500000
+wset_32KiB_chase	NONE	memhier	--cmd bin/chase:32:500000
+wset_64KiB_chase	NONE	memhier	--cmd bin/chase:64:500000
+wset_128KiB_chase	NONE	memhier	--cmd bin/chase:128:500000
+wset_256KiB_chase	NONE	memhier	--cmd bin/chase:256:500000
+wset_512KiB_chase	NONE	memhier	--cmd bin/chase:512:500000
+wset_1024KiB_chase	NONE	memhier	--cmd bin/chase:1024:500000
+wset_2048KiB_chase	NONE	memhier	--cmd bin/chase:2048:500000
+wset_4096KiB_chase	NONE	memhier	--cmd bin/chase:4096:500000
+wset_8192KiB_chase	NONE	memhier	--cmd bin/chase:8192:500000

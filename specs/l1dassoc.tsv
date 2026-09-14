@@ -1,0 +1,21 @@
+# l1dassoc: name\tgem5-options\tscript\tconfig-arguments
+l1dassoc_1way_matmul	NONE	memhier	--l1d-assoc 1 --cmd bin/matmul:96:0
+l1dassoc_1way_stream	NONE	memhier	--l1d-assoc 1 --cmd bin/stream:524288:2
+l1dassoc_1way_stride	NONE	memhier	--l1d-assoc 1 --cmd bin/stride:32768:8:200000
+l1dassoc_1way_chase	NONE	memhier	--l1d-assoc 1 --cmd bin/chase:1024:500000
+l1dassoc_2way_matmul	NONE	memhier	--l1d-assoc 2 --cmd bin/matmul:96:0
+l1dassoc_2way_stream	NONE	memhier	--l1d-assoc 2 --cmd bin/stream:524288:2
+l1dassoc_2way_stride	NONE	memhier	--l1d-assoc 2 --cmd bin/stride:32768:8:200000
+l1dassoc_2way_chase	NONE	memhier	--l1d-assoc 2 --cmd bin/chase:1024:500000
+l1dassoc_4way_matmul	NONE	memhier	--l1d-assoc 4 --cmd bin/matmul:96:0
+l1dassoc_4way_stream	NONE	memhier	--l1d-assoc 4 --cmd bin/stream:524288:2
+l1dassoc_4way_stride	NONE	memhier	--l1d-assoc 4 --cmd bin/stride:32768:8:200000
+l1dassoc_4way_chase	NONE	memhier	--l1d-assoc 4 --cmd bin/chase:1024:500000
+l1dassoc_8way_matmul	NONE	memhier	--l1d-assoc 8 --cmd bin/matmul:96:0
+l1dassoc_8way_stream	NONE	memhier	--l1d-assoc 8 --cmd bin/stream:524288:2
+l1dassoc_8way_stride	NONE	memhier	--l1d-assoc 8 --cmd bin/stride:32768:8:200000
+l1dassoc_8way_chase	NONE	memhier	--l1d-assoc 8 --cmd bin/chase:1024:500000
+l1dassoc_16way_matmul	NONE	memhier	--l1d-assoc 16 --cmd bin/matmul:96:0
+l1dassoc_16way_stream	NONE	memhier	--l1d-assoc 16 --cmd bin/stream:524288:2
+l1dassoc_16way_stride	NONE	memhier	--l1d-assoc 16 --cmd bin/stride:32768:8:200000
+l1dassoc_16way_chase	NONE	memhier	--l1d-assoc 16 --cmd bin/chase:1024:500000

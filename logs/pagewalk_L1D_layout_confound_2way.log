@@ -1,0 +1,26 @@
+# pagewalk with the stock 2-way L1D: the L1D miss rate depends on the page size (physical layout), confounding the page-size study
+== page_4KiB_pagewalk
+system.cpu.numCycles                         29390655                       # Number of cpu cycles simulated (Cycle)
+system.cpu.dcache.overallMissRate::total     0.176923                       # miss rate for overall accesses (Ratio)
+system.cpu.mmu.dtb.rdMisses                    500006                       # TLB misses on read requests (Count)
+system.cpu.mmu.dtb.pageFaults                     515                       # SE mode: first-touch page faults (page not yet mapped) (Count)
+== page_16KiB_pagewalk
+system.cpu.numCycles                         32339713                       # Number of cpu cycles simulated (Cycle)
+system.cpu.dcache.overallMissRate::total     0.966745                       # miss rate for overall accesses (Ratio)
+system.cpu.mmu.dtb.rdMisses                    304702                       # TLB misses on read requests (Count)
+system.cpu.mmu.dtb.pageFaults                     130                       # SE mode: first-touch page faults (page not yet mapped) (Count)
+== page_64KiB_pagewalk
+system.cpu.numCycles                         23278257                       # Number of cpu cycles simulated (Cycle)
+system.cpu.dcache.overallMissRate::total     0.990017                       # miss rate for overall accesses (Ratio)
+system.cpu.mmu.dtb.rdMisses                         2                       # TLB misses on read requests (Count)
+system.cpu.mmu.dtb.pageFaults                      34                       # SE mode: first-touch page faults (page not yet mapped) (Count)
+== page_256KiB_pagewalk
+system.cpu.numCycles                         23229941                       # Number of cpu cycles simulated (Cycle)
+system.cpu.dcache.overallMissRate::total     0.989999                       # miss rate for overall accesses (Ratio)
+system.cpu.mmu.dtb.rdMisses                         0                       # TLB misses on read requests (Count)
+system.cpu.mmu.dtb.pageFaults                      10                       # SE mode: first-touch page faults (page not yet mapped) (Count)
+== page_2MiB_pagewalk
+system.cpu.numCycles                         23215293                       # Number of cpu cycles simulated (Cycle)
+system.cpu.dcache.overallMissRate::total     0.989999                       # miss rate for overall accesses (Ratio)
+system.cpu.mmu.dtb.rdMisses                         0                       # TLB misses on read requests (Count)
+system.cpu.mmu.dtb.pageFaults                       3                       # SE mode: first-touch page faults (page not yet mapped) (Count)

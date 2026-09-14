@@ -1,0 +1,48 @@
+Global frequency set at 1000000000000 ticks per second
+warn: No dot file generated. Please install pydot to generate the dot file and pdf.
+src/mem/dram_interface.cc:692: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (1024 Mbytes)
+src/arch/x86/linux/se_workload.cc:76: warn: Unknown operating system; assuming Linux.
+src/base/statistics.hh:279: warn: One of the stats is a legacy stat. Legacy stat is a stat that does not belong to any statistics::Group. Legacy stat is deprecated.
+      0: system.cpu: Constructing CPU with id 0, socket id 0
+src/base/remote_gdb.cc:418: warn: Sockets disabled, not accepting gdb connections
+      0: system.cpu.workload: Allocating Page: 0x1000000-0x1010000
+      0: system.cpu.workload: Mapping the stack: 0x7ffffffe0000 65536B
+      0: system.cpu.workload: The addresses of items on the initial stack:
+      0: system.cpu.workload: 0x7ffffffeffae - file name
+      0: system.cpu.workload: 0x7ffffffeffae - env data
+      0: system.cpu.workload: 0x7ffffffeff59 - arg data
+      0: system.cpu.workload: 0x7ffffffeff39 - aux data
+      0: system.cpu.workload: 0x7ffffffefe00 - auxv array
+      0: system.cpu.workload: 0x7ffffffefdf8 - envp array
+      0: system.cpu.workload: 0x7ffffffefdd8 - argv array
+      0: system.cpu.workload: 0x7ffffffefdd0 - argc 
+      0: system.cpu.workload: 0x7ffffffefdd0 - stack min
+      0: system.cpu.workload: Allocating Page: 0x7ffffffe0000-0x7fffffff0000
+      0: system.cpu.workload: Allocating Page: 0xffffffffff600000-0xffffffffff610000
+gem5 Simulator System.  https://www.gem5.org
+gem5 is copyrighted software; use the --copyright option for details.
+
+gem5 version 25.1.0.1
+gem5 compiled Sep 13 2026 19:27:35
+gem5 started Sep 13 2026 19:31:54
+gem5 executing on Sriman-macbook.local, pid 86160
+command line: /Users/srimancherukuru/git/gem5/build/X86/gem5.opt --debug-flags=SyscallAll,Stack,MMU --outdir=/private/tmp/claude-501/-Users-srimancherukuru-Documents-BectranWorkSpace/c05249ab-2d26-4d36-a20a-2e413baedc35/scratchpad/smoke/pw_64k_dbg2 configs/memhier_config.py --page-size 64KiB --cmd bin/pagewalk:512:500000
+
+info: Standard input is not a terminal, disabling listeners.
+[memhier] cpu=timing L1D=64KiB/2w L1I=32KiB/2w L2=2MiB/8w line=64B pf=none/none repl=lru/lru victim=0 dtlb=64 itlb=64 page=64KiB tlbmiss=0c fault=0c cmd=bin/pagewalk:512:500000
+5945500: system.cpu: T0 : syscall Calling arch_prctl(4098, 16805728)...
+5945500: system.cpu: T0 : syscall Returned 0.
+6031500: system.cpu: T0 : syscall Calling set_tid_address(16805640)...
+6031500: system.cpu: T0 : syscall Returned 100.
+8658500: system.cpu: T0 : syscall Calling mmap(0, 2105344, 3, 34, -1, 0)...
+8658500: system.cpu: T0 : syscall  mmap range is 0x7ffff7de0000 - 0x7ffff7feffff
+8658500: system.cpu: T0 : syscall Returned 140737351909376.
+9111500: system.cpu.workload: Allocating Page: 0x7ffff7de0000-0x7ffff7df0000
+9918500: system.cpu: T0 : syscall Calling sched_getaffinity(0, 128, 140737488288888)...
+src/sim/syscall_emul.cc:73: warn: Cannot invoke sched_getaffinity on host operating system.
+9918500: system.cpu: T0 : syscall Returned -1.
+10566500: system.cpu: T0 : syscall Calling mmap(140737351782400, 126976, 3, 34, -1, 0)...
+10566500: system.cpu: T0 : syscall Returned -22.
+11625500: system.cpu: T0 : syscall Calling exit_group(1)...
+11625500: system.cpu: T0 : syscall Returned 1.
+[memhier] exiting @ tick 11625500 because exiting with last active thread context

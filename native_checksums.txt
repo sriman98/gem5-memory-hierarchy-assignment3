@@ -1,0 +1,6 @@
+Hello, World!
+matmul: n=96 block=0 checksum=219826053362
+stream: words=524288 passes=2 checksum=8dd97a8432780000
+stride: stride=32768 lines=8 iters=200000 checksum=1605600000
+chase: footprint_kib=1024 nodes=16384 hops=500000 final=9930
+pagewalk: pages=512 hops=500000 final=200

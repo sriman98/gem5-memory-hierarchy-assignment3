@@ -1,0 +1,31 @@
+# page: name\tgem5-options\tscript\tconfig-arguments
+page_4KiB_pagewalk	NONE	memhier	--l1d-assoc 16 --page-size 4KiB --tlb-miss-lat 30 --fault-lat 2000 --cmd bin/pagewalk:512:500000
+page_4KiB_chase4m	NONE	memhier	--l1d-assoc 16 --page-size 4KiB --tlb-miss-lat 30 --fault-lat 2000 --cmd bin/chase:4096:500000
+page_4KiB_stream	NONE	memhier	--l1d-assoc 16 --page-size 4KiB --tlb-miss-lat 30 --fault-lat 2000 --cmd bin/stream:524288:2
+page_4KiB_matmul	NONE	memhier	--l1d-assoc 16 --page-size 4KiB --tlb-miss-lat 30 --fault-lat 2000 --cmd bin/matmul:96:0
+page_16KiB_pagewalk	NONE	memhier	--l1d-assoc 16 --page-size 16KiB --tlb-miss-lat 30 --fault-lat 2000 --cmd bin/pagewalk:512:500000
+page_16KiB_chase4m	NONE	memhier	--l1d-assoc 16 --page-size 16KiB --tlb-miss-lat 30 --fault-lat 2000 --cmd bin/chase:4096:500000
+page_16KiB_stream	NONE	memhier	--l1d-assoc 16 --page-size 16KiB --tlb-miss-lat 30 --fault-lat 2000 --cmd bin/stream:524288:2
+page_16KiB_matmul	NONE	memhier	--l1d-assoc 16 --page-size 16KiB --tlb-miss-lat 30 --fault-lat 2000 --cmd bin/matmul:96:0
+page_64KiB_pagewalk	NONE	memhier	--l1d-assoc 16 --page-size 64KiB --tlb-miss-lat 30 --fault-lat 2000 --cmd bin/pagewalk:512:500000
+page_64KiB_chase4m	NONE	memhier	--l1d-assoc 16 --page-size 64KiB --tlb-miss-lat 30 --fault-lat 2000 --cmd bin/chase:4096:500000
+page_64KiB_stream	NONE	memhier	--l1d-assoc 16 --page-size 64KiB --tlb-miss-lat 30 --fault-lat 2000 --cmd bin/stream:524288:2
+page_64KiB_matmul	NONE	memhier	--l1d-assoc 16 --page-size 64KiB --tlb-miss-lat 30 --fault-lat 2000 --cmd bin/matmul:96:0
+page_256KiB_pagewalk	NONE	memhier	--l1d-assoc 16 --page-size 256KiB --tlb-miss-lat 30 --fault-lat 2000 --cmd bin/pagewalk:512:500000
+page_256KiB_chase4m	NONE	memhier	--l1d-assoc 16 --page-size 256KiB --tlb-miss-lat 30 --fault-lat 2000 --cmd bin/chase:4096:500000
+page_256KiB_stream	NONE	memhier	--l1d-assoc 16 --page-size 256KiB --tlb-miss-lat 30 --fault-lat 2000 --cmd bin/stream:524288:2
+page_256KiB_matmul	NONE	memhier	--l1d-assoc 16 --page-size 256KiB --tlb-miss-lat 30 --fault-lat 2000 --cmd bin/matmul:96:0
+page_2MiB_pagewalk	NONE	memhier	--l1d-assoc 16 --page-size 2MiB --tlb-miss-lat 30 --fault-lat 2000 --cmd bin/pagewalk:512:500000
+page_2MiB_chase4m	NONE	memhier	--l1d-assoc 16 --page-size 2MiB --tlb-miss-lat 30 --fault-lat 2000 --cmd bin/chase:4096:500000
+page_2MiB_stream	NONE	memhier	--l1d-assoc 16 --page-size 2MiB --tlb-miss-lat 30 --fault-lat 2000 --cmd bin/stream:524288:2
+page_2MiB_matmul	NONE	memhier	--l1d-assoc 16 --page-size 2MiB --tlb-miss-lat 30 --fault-lat 2000 --cmd bin/matmul:96:0
+pagenf_4KiB_pagewalk	NONE	memhier	--l1d-assoc 16 --page-size 4KiB --tlb-miss-lat 30 --cmd bin/pagewalk:512:500000
+pagenf_4KiB_chase4m	NONE	memhier	--l1d-assoc 16 --page-size 4KiB --tlb-miss-lat 30 --cmd bin/chase:4096:500000
+pagenf_16KiB_pagewalk	NONE	memhier	--l1d-assoc 16 --page-size 16KiB --tlb-miss-lat 30 --cmd bin/pagewalk:512:500000
+pagenf_16KiB_chase4m	NONE	memhier	--l1d-assoc 16 --page-size 16KiB --tlb-miss-lat 30 --cmd bin/chase:4096:500000
+pagenf_64KiB_pagewalk	NONE	memhier	--l1d-assoc 16 --page-size 64KiB --tlb-miss-lat 30 --cmd bin/pagewalk:512:500000
+pagenf_64KiB_chase4m	NONE	memhier	--l1d-assoc 16 --page-size 64KiB --tlb-miss-lat 30 --cmd bin/chase:4096:500000
+pagenf_256KiB_pagewalk	NONE	memhier	--l1d-assoc 16 --page-size 256KiB --tlb-miss-lat 30 --cmd bin/pagewalk:512:500000
+pagenf_256KiB_chase4m	NONE	memhier	--l1d-assoc 16 --page-size 256KiB --tlb-miss-lat 30 --cmd bin/chase:4096:500000
+pagenf_2MiB_pagewalk	NONE	memhier	--l1d-assoc 16 --page-size 2MiB --tlb-miss-lat 30 --cmd bin/pagewalk:512:500000
+pagenf_2MiB_chase4m	NONE	memhier	--l1d-assoc 16 --page-size 2MiB --tlb-miss-lat 30 --cmd bin/chase:4096:500000

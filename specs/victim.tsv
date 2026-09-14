@@ -1,0 +1,22 @@
+# victim: name\tgem5-options\tscript\tconfig-arguments
+victim_dm_stride	NONE	memhier	--l1d-assoc 1 --cmd bin/stride:32768:8:200000
+victim_dm_matmul	NONE	memhier	--l1d-assoc 1 --cmd bin/matmul:96:0
+victim_dm_chase	NONE	memhier	--l1d-assoc 1 --cmd bin/chase:1024:500000
+victim_dm+v4_stride	NONE	memhier	--l1d-assoc 1 --victim 4 --cmd bin/stride:32768:8:200000
+victim_dm+v4_matmul	NONE	memhier	--l1d-assoc 1 --victim 4 --cmd bin/matmul:96:0
+victim_dm+v4_chase	NONE	memhier	--l1d-assoc 1 --victim 4 --cmd bin/chase:1024:500000
+victim_dm+v8_stride	NONE	memhier	--l1d-assoc 1 --victim 8 --cmd bin/stride:32768:8:200000
+victim_dm+v8_matmul	NONE	memhier	--l1d-assoc 1 --victim 8 --cmd bin/matmul:96:0
+victim_dm+v8_chase	NONE	memhier	--l1d-assoc 1 --victim 8 --cmd bin/chase:1024:500000
+victim_dm+v16_stride	NONE	memhier	--l1d-assoc 1 --victim 16 --cmd bin/stride:32768:8:200000
+victim_dm+v16_matmul	NONE	memhier	--l1d-assoc 1 --victim 16 --cmd bin/matmul:96:0
+victim_dm+v16_chase	NONE	memhier	--l1d-assoc 1 --victim 16 --cmd bin/chase:1024:500000
+victim_2way_stride	NONE	memhier	--l1d-assoc 2 --cmd bin/stride:32768:8:200000
+victim_2way_matmul	NONE	memhier	--l1d-assoc 2 --cmd bin/matmul:96:0
+victim_2way_chase	NONE	memhier	--l1d-assoc 2 --cmd bin/chase:1024:500000
+victim_2way+v8_stride	NONE	memhier	--l1d-assoc 2 --victim 8 --cmd bin/stride:32768:8:200000
+victim_2way+v8_matmul	NONE	memhier	--l1d-assoc 2 --victim 8 --cmd bin/matmul:96:0
+victim_2way+v8_chase	NONE	memhier	--l1d-assoc 2 --victim 8 --cmd bin/chase:1024:500000
+victim_8way_stride	NONE	memhier	--l1d-assoc 8 --cmd bin/stride:32768:8:200000
+victim_8way_matmul	NONE	memhier	--l1d-assoc 8 --cmd bin/matmul:96:0
+victim_8way_chase	NONE	memhier	--l1d-assoc 8 --cmd bin/chase:1024:500000

@@ -1,0 +1,25 @@
+# l2size: name\tgem5-options\tscript\tconfig-arguments
+l2size_256KiB_matmul	NONE	memhier	--l2-size 256KiB --cmd bin/matmul:96:0
+l2size_256KiB_stream	NONE	memhier	--l2-size 256KiB --cmd bin/stream:524288:2
+l2size_256KiB_chase	NONE	memhier	--l2-size 256KiB --cmd bin/chase:1024:500000
+l2size_256KiB_chase4m	NONE	memhier	--l2-size 256KiB --cmd bin/chase:4096:500000
+l2size_512KiB_matmul	NONE	memhier	--l2-size 512KiB --cmd bin/matmul:96:0
+l2size_512KiB_stream	NONE	memhier	--l2-size 512KiB --cmd bin/stream:524288:2
+l2size_512KiB_chase	NONE	memhier	--l2-size 512KiB --cmd bin/chase:1024:500000
+l2size_512KiB_chase4m	NONE	memhier	--l2-size 512KiB --cmd bin/chase:4096:500000
+l2size_1MiB_matmul	NONE	memhier	--l2-size 1MiB --cmd bin/matmul:96:0
+l2size_1MiB_stream	NONE	memhier	--l2-size 1MiB --cmd bin/stream:524288:2
+l2size_1MiB_chase	NONE	memhier	--l2-size 1MiB --cmd bin/chase:1024:500000
+l2size_1MiB_chase4m	NONE	memhier	--l2-size 1MiB --cmd bin/chase:4096:500000
+l2size_2MiB_matmul	NONE	memhier	--l2-size 2MiB --cmd bin/matmul:96:0
+l2size_2MiB_stream	NONE	memhier	--l2-size 2MiB --cmd bin/stream:524288:2
+l2size_2MiB_chase	NONE	memhier	--l2-size 2MiB --cmd bin/chase:1024:500000
+l2size_2MiB_chase4m	NONE	memhier	--l2-size 2MiB --cmd bin/chase:4096:500000
+l2size_4MiB_matmul	NONE	memhier	--l2-size 4MiB --cmd bin/matmul:96:0
+l2size_4MiB_stream	NONE	memhier	--l2-size 4MiB --cmd bin/stream:524288:2
+l2size_4MiB_chase	NONE	memhier	--l2-size 4MiB --cmd bin/chase:1024:500000
+l2size_4MiB_chase4m	NONE	memhier	--l2-size 4MiB --cmd bin/chase:4096:500000
+l2size_8MiB_matmul	NONE	memhier	--l2-size 8MiB --cmd bin/matmul:96:0
+l2size_8MiB_stream	NONE	memhier	--l2-size 8MiB --cmd bin/stream:524288:2
+l2size_8MiB_chase	NONE	memhier	--l2-size 8MiB --cmd bin/chase:1024:500000
+l2size_8MiB_chase4m	NONE	memhier	--l2-size 8MiB --cmd bin/chase:4096:500000

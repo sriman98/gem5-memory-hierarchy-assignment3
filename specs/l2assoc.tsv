@@ -1,0 +1,11 @@
+# l2assoc: name\tgem5-options\tscript\tconfig-arguments
+l2assoc_1way_matmul	NONE	memhier	--l2-assoc 1 --cmd bin/matmul:96:0
+l2assoc_1way_chase4m	NONE	memhier	--l2-assoc 1 --cmd bin/chase:4096:500000
+l2assoc_2way_matmul	NONE	memhier	--l2-assoc 2 --cmd bin/matmul:96:0
+l2assoc_2way_chase4m	NONE	memhier	--l2-assoc 2 --cmd bin/chase:4096:500000
+l2assoc_4way_matmul	NONE	memhier	--l2-assoc 4 --cmd bin/matmul:96:0
+l2assoc_4way_chase4m	NONE	memhier	--l2-assoc 4 --cmd bin/chase:4096:500000
+l2assoc_8way_matmul	NONE	memhier	--l2-assoc 8 --cmd bin/matmul:96:0
+l2assoc_8way_chase4m	NONE	memhier	--l2-assoc 8 --cmd bin/chase:4096:500000
+l2assoc_16way_matmul	NONE	memhier	--l2-assoc 16 --cmd bin/matmul:96:0
+l2assoc_16way_chase4m	NONE	memhier	--l2-assoc 16 --cmd bin/chase:4096:500000

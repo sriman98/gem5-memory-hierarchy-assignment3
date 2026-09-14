@@ -1,0 +1,13 @@
+# stride WITHOUT the initial sequential sweep, direct-mapped 64 KiB L1D: the 8 lines land in 8 different physical frames (first-touch allocation) and 8 different sets -> no conflict misses
+stride: stride=32768 lines=8 iters=200000 checksum=1605600000
+[memhier] exiting @ tick 12223274500 because exiting with last active thread context
+system.cpu.numCycles                         24446549                       # Number of cpu cycles simulated (Cycle)
+system.cpu.dcache.overallMisses::total             66                       # number of overall misses (Count)
+system.cpu.dcache.overallAccesses::total      1601846                       # number of overall (read+write) accesses (Count)
+system.cpu.dcache.overallMissRate::total     0.000041                       # miss rate for overall accesses (Ratio)
+
+# the same kernel WITH the sweep (results/runs/victim_dm_stride):
+system.cpu.numCycles                         64970069                       # Number of cpu cycles simulated (Cycle)
+system.cpu.dcache.overallMisses::total        1604169                       # number of overall misses (Count)
+system.cpu.dcache.overallAccesses::total      1863851                       # number of overall (read+write) accesses (Count)
+system.cpu.dcache.overallMissRate::total     0.860674                       # miss rate for overall accesses (Ratio)

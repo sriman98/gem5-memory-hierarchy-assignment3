@@ -1,0 +1,15 @@
+# opt: name\tgem5-options\tscript\tconfig-arguments
+opt_combined_matmul	NONE	memhier	--l1d-size 64KiB --l1d-assoc 8 --l1d-pf tagged --l2-size 4MiB --l2-assoc 16 --l2-pf stride --cmd bin/matmul:96:0
+opt_line128_matmul	NONE	memhier	--l1d-size 64KiB --l1d-assoc 8 --l1d-pf tagged --l2-size 4MiB --l2-assoc 16 --l2-pf stride --line 128 --cmd bin/matmul:96:0
+opt_combined_matmulb	NONE	memhier	--l1d-size 64KiB --l1d-assoc 8 --l1d-pf tagged --l2-size 4MiB --l2-assoc 16 --l2-pf stride --cmd bin/matmul:96:16
+opt_line128_matmulb	NONE	memhier	--l1d-size 64KiB --l1d-assoc 8 --l1d-pf tagged --l2-size 4MiB --l2-assoc 16 --l2-pf stride --line 128 --cmd bin/matmul:96:16
+opt_combined_stream	NONE	memhier	--l1d-size 64KiB --l1d-assoc 8 --l1d-pf tagged --l2-size 4MiB --l2-assoc 16 --l2-pf stride --cmd bin/stream:524288:2
+opt_line128_stream	NONE	memhier	--l1d-size 64KiB --l1d-assoc 8 --l1d-pf tagged --l2-size 4MiB --l2-assoc 16 --l2-pf stride --line 128 --cmd bin/stream:524288:2
+opt_combined_stride	NONE	memhier	--l1d-size 64KiB --l1d-assoc 8 --l1d-pf tagged --l2-size 4MiB --l2-assoc 16 --l2-pf stride --cmd bin/stride:32768:8:200000
+opt_line128_stride	NONE	memhier	--l1d-size 64KiB --l1d-assoc 8 --l1d-pf tagged --l2-size 4MiB --l2-assoc 16 --l2-pf stride --line 128 --cmd bin/stride:32768:8:200000
+opt_combined_chase	NONE	memhier	--l1d-size 64KiB --l1d-assoc 8 --l1d-pf tagged --l2-size 4MiB --l2-assoc 16 --l2-pf stride --cmd bin/chase:1024:500000
+opt_line128_chase	NONE	memhier	--l1d-size 64KiB --l1d-assoc 8 --l1d-pf tagged --l2-size 4MiB --l2-assoc 16 --l2-pf stride --line 128 --cmd bin/chase:1024:500000
+opt_combined_chase4m	NONE	memhier	--l1d-size 64KiB --l1d-assoc 8 --l1d-pf tagged --l2-size 4MiB --l2-assoc 16 --l2-pf stride --cmd bin/chase:4096:500000
+opt_line128_chase4m	NONE	memhier	--l1d-size 64KiB --l1d-assoc 8 --l1d-pf tagged --l2-size 4MiB --l2-assoc 16 --l2-pf stride --line 128 --cmd bin/chase:4096:500000
+opt_combined_pagewalk	NONE	memhier	--l1d-size 64KiB --l1d-assoc 8 --l1d-pf tagged --l2-size 4MiB --l2-assoc 16 --l2-pf stride --cmd bin/pagewalk:512:500000
+opt_line128_pagewalk	NONE	memhier	--l1d-size 64KiB --l1d-assoc 8 --l1d-pf tagged --l2-size 4MiB --l2-assoc 16 --l2-pf stride --line 128 --cmd bin/pagewalk:512:500000

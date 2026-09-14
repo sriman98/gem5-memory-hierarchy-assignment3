@@ -1,0 +1,25 @@
+# repl: name\tgem5-options\tscript\tconfig-arguments
+repl_lru_matmul	NONE	memhier	--l1d-repl lru --l2-repl lru --cmd bin/matmul:96:0
+repl_lru_stride	NONE	memhier	--l1d-repl lru --l2-repl lru --cmd bin/stride:32768:8:200000
+repl_lru_chase	NONE	memhier	--l1d-repl lru --l2-repl lru --cmd bin/chase:1024:500000
+repl_lru_chase4m	NONE	memhier	--l1d-repl lru --l2-repl lru --cmd bin/chase:4096:500000
+repl_random_matmul	NONE	memhier	--l1d-repl random --l2-repl random --cmd bin/matmul:96:0
+repl_random_stride	NONE	memhier	--l1d-repl random --l2-repl random --cmd bin/stride:32768:8:200000
+repl_random_chase	NONE	memhier	--l1d-repl random --l2-repl random --cmd bin/chase:1024:500000
+repl_random_chase4m	NONE	memhier	--l1d-repl random --l2-repl random --cmd bin/chase:4096:500000
+repl_treeplru_matmul	NONE	memhier	--l1d-repl treeplru --l2-repl treeplru --cmd bin/matmul:96:0
+repl_treeplru_stride	NONE	memhier	--l1d-repl treeplru --l2-repl treeplru --cmd bin/stride:32768:8:200000
+repl_treeplru_chase	NONE	memhier	--l1d-repl treeplru --l2-repl treeplru --cmd bin/chase:1024:500000
+repl_treeplru_chase4m	NONE	memhier	--l1d-repl treeplru --l2-repl treeplru --cmd bin/chase:4096:500000
+repl_fifo_matmul	NONE	memhier	--l1d-repl fifo --l2-repl fifo --cmd bin/matmul:96:0
+repl_fifo_stride	NONE	memhier	--l1d-repl fifo --l2-repl fifo --cmd bin/stride:32768:8:200000
+repl_fifo_chase	NONE	memhier	--l1d-repl fifo --l2-repl fifo --cmd bin/chase:1024:500000
+repl_fifo_chase4m	NONE	memhier	--l1d-repl fifo --l2-repl fifo --cmd bin/chase:4096:500000
+repl_rrip_matmul	NONE	memhier	--l1d-repl rrip --l2-repl rrip --cmd bin/matmul:96:0
+repl_rrip_stride	NONE	memhier	--l1d-repl rrip --l2-repl rrip --cmd bin/stride:32768:8:200000
+repl_rrip_chase	NONE	memhier	--l1d-repl rrip --l2-repl rrip --cmd bin/chase:1024:500000
+repl_rrip_chase4m	NONE	memhier	--l1d-repl rrip --l2-repl rrip --cmd bin/chase:4096:500000
+repl_nru_matmul	NONE	memhier	--l1d-repl nru --l2-repl nru --cmd bin/matmul:96:0
+repl_nru_stride	NONE	memhier	--l1d-repl nru --l2-repl nru --cmd bin/stride:32768:8:200000
+repl_nru_chase	NONE	memhier	--l1d-repl nru --l2-repl nru --cmd bin/chase:1024:500000
+repl_nru_chase4m	NONE	memhier	--l1d-repl nru --l2-repl nru --cmd bin/chase:4096:500000

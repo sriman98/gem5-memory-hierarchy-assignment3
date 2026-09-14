@@ -1,0 +1,21 @@
+# line: name\tgem5-options\tscript\tconfig-arguments
+line_16B_matmul	NONE	memhier	--line 16 --cmd bin/matmul:96:0
+line_16B_stream	NONE	memhier	--line 16 --cmd bin/stream:524288:2
+line_16B_stride	NONE	memhier	--line 16 --cmd bin/stride:32768:8:200000
+line_16B_chase	NONE	memhier	--line 16 --cmd bin/chase:1024:500000
+line_32B_matmul	NONE	memhier	--line 32 --cmd bin/matmul:96:0
+line_32B_stream	NONE	memhier	--line 32 --cmd bin/stream:524288:2
+line_32B_stride	NONE	memhier	--line 32 --cmd bin/stride:32768:8:200000
+line_32B_chase	NONE	memhier	--line 32 --cmd bin/chase:1024:500000
+line_64B_matmul	NONE	memhier	--line 64 --cmd bin/matmul:96:0
+line_64B_stream	NONE	memhier	--line 64 --cmd bin/stream:524288:2
+line_64B_stride	NONE	memhier	--line 64 --cmd bin/stride:32768:8:200000
+line_64B_chase	NONE	memhier	--line 64 --cmd bin/chase:1024:500000
+line_128B_matmul	NONE	memhier	--line 128 --cmd bin/matmul:96:0
+line_128B_stream	NONE	memhier	--line 128 --cmd bin/stream:524288:2
+line_128B_stride	NONE	memhier	--line 128 --cmd bin/stride:32768:8:200000
+line_128B_chase	NONE	memhier	--line 128 --cmd bin/chase:1024:500000
+line_256B_matmul	NONE	memhier	--line 256 --cmd bin/matmul:96:0
+line_256B_stream	NONE	memhier	--line 256 --cmd bin/stream:524288:2
+line_256B_stride	NONE	memhier	--line 256 --cmd bin/stride:32768:8:200000
+line_256B_chase	NONE	memhier	--line 256 --cmd bin/chase:1024:500000

@@ -1,0 +1,9 @@
+# stock: name\tgem5-options\tscript\tconfig-arguments
+stock_default_hello	NONE	stock	--cpu-type=TimingSimpleCPU --caches --l2cache --mem-size=1GiB -c bin/hello
+stock_default_matmul	NONE	stock	--cpu-type=TimingSimpleCPU --caches --l2cache --mem-size=1GiB -c bin/matmul -o '96 0'
+stock_default_matmulb	NONE	stock	--cpu-type=TimingSimpleCPU --caches --l2cache --mem-size=1GiB -c bin/matmul -o '96 16'
+stock_default_stream	NONE	stock	--cpu-type=TimingSimpleCPU --caches --l2cache --mem-size=1GiB -c bin/stream -o '524288 2'
+stock_default_stride	NONE	stock	--cpu-type=TimingSimpleCPU --caches --l2cache --mem-size=1GiB -c bin/stride -o '32768 8 200000'
+stock_default_chase	NONE	stock	--cpu-type=TimingSimpleCPU --caches --l2cache --mem-size=1GiB -c bin/chase -o '1024 500000'
+stock_default_chase4m	NONE	stock	--cpu-type=TimingSimpleCPU --caches --l2cache --mem-size=1GiB -c bin/chase -o '4096 500000'
+stock_default_pagewalk	NONE	stock	--cpu-type=TimingSimpleCPU --caches --l2cache --mem-size=1GiB -c bin/pagewalk -o '512 500000'

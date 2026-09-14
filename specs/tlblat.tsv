@@ -1,0 +1,16 @@
+# tlblat: name\tgem5-options\tscript\tconfig-arguments
+tlblat_0c_pagewalk	NONE	memhier	--l1d-assoc 16 --tlb-miss-lat 0 --cmd bin/pagewalk:512:500000
+tlblat_0c_chase4m	NONE	memhier	--l1d-assoc 16 --tlb-miss-lat 0 --cmd bin/chase:4096:500000
+tlblat_0c_stream	NONE	memhier	--l1d-assoc 16 --tlb-miss-lat 0 --cmd bin/stream:524288:2
+tlblat_10c_pagewalk	NONE	memhier	--l1d-assoc 16 --tlb-miss-lat 10 --cmd bin/pagewalk:512:500000
+tlblat_10c_chase4m	NONE	memhier	--l1d-assoc 16 --tlb-miss-lat 10 --cmd bin/chase:4096:500000
+tlblat_10c_stream	NONE	memhier	--l1d-assoc 16 --tlb-miss-lat 10 --cmd bin/stream:524288:2
+tlblat_30c_pagewalk	NONE	memhier	--l1d-assoc 16 --tlb-miss-lat 30 --cmd bin/pagewalk:512:500000
+tlblat_30c_chase4m	NONE	memhier	--l1d-assoc 16 --tlb-miss-lat 30 --cmd bin/chase:4096:500000
+tlblat_30c_stream	NONE	memhier	--l1d-assoc 16 --tlb-miss-lat 30 --cmd bin/stream:524288:2
+tlblat_60c_pagewalk	NONE	memhier	--l1d-assoc 16 --tlb-miss-lat 60 --cmd bin/pagewalk:512:500000
+tlblat_60c_chase4m	NONE	memhier	--l1d-assoc 16 --tlb-miss-lat 60 --cmd bin/chase:4096:500000
+tlblat_60c_stream	NONE	memhier	--l1d-assoc 16 --tlb-miss-lat 60 --cmd bin/stream:524288:2
+tlblat_100c_pagewalk	NONE	memhier	--l1d-assoc 16 --tlb-miss-lat 100 --cmd bin/pagewalk:512:500000
+tlblat_100c_chase4m	NONE	memhier	--l1d-assoc 16 --tlb-miss-lat 100 --cmd bin/chase:4096:500000
+tlblat_100c_stream	NONE	memhier	--l1d-assoc 16 --tlb-miss-lat 100 --cmd bin/stream:524288:2

@@ -1,0 +1,13 @@
+# o3: name\tgem5-options\tscript\tconfig-arguments
+o3_default_matmul	NONE	memhier	--cpu o3 --cmd bin/matmul:96:0
+o3_default_stream	NONE	memhier	--cpu o3 --cmd bin/stream:524288:2
+o3_default_stride	NONE	memhier	--cpu o3 --cmd bin/stride:32768:8:200000
+o3_default_chase	NONE	memhier	--cpu o3 --cmd bin/chase:1024:500000
+o3_l1d32k8w_matmul	NONE	memhier	--cpu o3 --l1d-size 32KiB --l1d-assoc 8 --cmd bin/matmul:96:0
+o3_l1d32k8w_stream	NONE	memhier	--cpu o3 --l1d-size 32KiB --l1d-assoc 8 --cmd bin/stream:524288:2
+o3_l1d32k8w_stride	NONE	memhier	--cpu o3 --l1d-size 32KiB --l1d-assoc 8 --cmd bin/stride:32768:8:200000
+o3_l1d32k8w_chase	NONE	memhier	--cpu o3 --l1d-size 32KiB --l1d-assoc 8 --cmd bin/chase:1024:500000
+o3_pf_matmul	NONE	memhier	--cpu o3 --l1d-pf stride --l2-pf stride --cmd bin/matmul:96:0
+o3_pf_stream	NONE	memhier	--cpu o3 --l1d-pf stride --l2-pf stride --cmd bin/stream:524288:2
+o3_pf_stride	NONE	memhier	--cpu o3 --l1d-pf stride --l2-pf stride --cmd bin/stride:32768:8:200000
+o3_pf_chase	NONE	memhier	--cpu o3 --l1d-pf stride --l2-pf stride --cmd bin/chase:1024:500000
