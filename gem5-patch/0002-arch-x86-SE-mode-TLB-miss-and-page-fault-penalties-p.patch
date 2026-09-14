@@ -1,0 +1,213 @@
+From f78ea436677b7b9d36c8cdf69974bd0a0c969d61 Mon Sep 17 00:00:00 2001
+From: Sriman Cherukuru <srimancherukuru@Sriman-macbook.local>
+Date: Sun, 13 Sep 2026 19:33:48 -0500
+Subject: [PATCH 2/2] arch-x86: SE-mode TLB miss and page-fault penalties plus
+ counters
+
+In syscall-emulation mode the x86 TLB services a miss from the emulated
+page table in zero simulated time, so TLB size and page size have no
+performance effect.  Add X86TLB.miss_latency and X86TLB.fault_latency
+(cycles, default 0 = stock behaviour): on a timing translation that
+missed (or took a first-touch page fault) the response is delayed by that
+many cycles through the walker's clock, exactly like a hardware page walk
+in full-system mode.  Also add the pageFaults and penaltyCycles
+statistics.  The x86 TLB entry inserted in SE mode now carries the
+emulated page size (see the previous commit).
+
+Assignment 3 (memory hierarchy), Sriman Cherukuru, Sep 2026.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
+---
+ src/arch/x86/X86TLB.py | 11 ++++++++
+ src/arch/x86/tlb.cc    | 63 +++++++++++++++++++++++++++++++-----------
+ src/arch/x86/tlb.hh    | 12 ++++++++
+ 3 files changed, 70 insertions(+), 16 deletions(-)
+
+diff --git a/src/arch/x86/X86TLB.py b/src/arch/x86/X86TLB.py
+index 8c3c65cce3..97c380f82c 100644
+--- a/src/arch/x86/X86TLB.py
++++ b/src/arch/x86/X86TLB.py
+@@ -57,6 +57,17 @@ class X86TLB(BaseTLB):
+     cxx_header = "arch/x86/tlb.hh"
+ 
+     size = Param.Unsigned(64, "TLB size")
++    miss_latency = Param.Cycles(
++        0,
++        "SE mode only: cycles charged for a TLB miss (the page-table walk "
++        "that syscall emulation otherwise performs in zero time). Timing "
++        "accesses only; atomic/functional translations stay instantaneous.",
++    )
++    fault_latency = Param.Cycles(
++        0,
++        "SE mode only: extra cycles charged when a first-touch page fault "
++        "is taken (models the OS fault handler); 0 = free, as in stock gem5.",
++    )
+     system = Param.System(Parent.any, "system object")
+     walker = Param.X86PagetableWalker(
+         X86PagetableWalker(), "page table walker"
+diff --git a/src/arch/x86/tlb.cc b/src/arch/x86/tlb.cc
+index 270af19863..7fd67eec5c 100644
+--- a/src/arch/x86/tlb.cc
++++ b/src/arch/x86/tlb.cc
+@@ -47,12 +47,14 @@
+ #include "arch/x86/regs/misc.hh"
+ #include "arch/x86/regs/msr.hh"
+ #include "arch/x86/x86_traits.hh"
++#include "base/intmath.hh"
+ #include "base/trace.hh"
+ #include "cpu/thread_context.hh"
+ #include "debug/TLB.hh"
+ #include "mem/packet_access.hh"
+ #include "mem/page_table.hh"
+ #include "mem/request.hh"
++#include "sim/eventq.hh"
+ #include "sim/full_system.hh"
+ #include "sim/process.hh"
+ #include "sim/pseudo_inst.hh"
+@@ -64,7 +66,8 @@ namespace X86ISA {
+ 
+ TLB::TLB(const Params &p)
+     : BaseTLB(p), configAddress(0), size(p.size),
+-      tlb(size), lruSeq(0), m5opRange(p.system->m5opRange()), stats(this)
++      tlb(size), lruSeq(0), m5opRange(p.system->m5opRange()),
++      missLatency(p.miss_latency), faultLatency(p.fault_latency), stats(this)
+ {
+     if (!size)
+         fatal("TLBs must have a non-zero size.\n");
+@@ -121,14 +124,11 @@ TLB::insert(Addr vpn, const TlbEntry &entry, uint64_t pcid)
+     *newEntry = entry;
+     newEntry->lruSeq = nextSeq();
+     newEntry->vaddr = vpn;
+-    if (FullSystem) {
+-        newEntry->trieHandle =
+-        trie.insert(vpn, TlbEntryTrie::MaxBits-entry.logBytes, newEntry);
+-    }
+-    else {
+-        newEntry->trieHandle =
+-        trie.insert(vpn, TlbEntryTrie::MaxBits, newEntry);
+-    }
++    // Key the trie on the page-number bits only, so that a lookup with any
++    // address inside the page finds the entry whatever the page size is
++    // (SE mode used an exact-match key, which only worked for 4 KiB pages).
++    newEntry->trieHandle =
++        trie.insert(vpn, TlbEntryTrie::MaxBits - entry.logBytes, newEntry);
+     return newEntry;
+ }
+ 
+@@ -436,6 +436,7 @@ TLB::translate(const RequestPtr &req,
+                 DPRINTF(TLB, "Handling a TLB miss for "
+                         "address %#x at pc %#x.\n",
+                         vaddr, tc->pcState().instAddr());
++                seMiss = true;
+                 switch (mode) {
+                     case BaseMMU::Read:
+                         stats.rdMisses++;
+@@ -464,17 +465,25 @@ TLB::translate(const RequestPtr &req,
+                     const EmulationPageTable::Entry *pte =
+                         p->pTable->lookup(vaddr);
+                     if (!pte) {
++                        // First touch of a page: the CPU will invoke this
++                        // fault, Process::fixupFault maps the page, and the
++                        // access is retried (and misses the TLB once more).
++                        seFault = true;
++                        stats.pageFaults++;
+                         return std::make_shared<PageFault>(vaddr, true, mode,
+                                                            true, false);
+                     } else {
+                         Addr alignedVaddr = p->pTable->pageAlign(vaddr);
+                         DPRINTF(TLB, "Mapping %#x to %#x\n", alignedVaddr,
+                                 pte->paddr);
+-                        entry = insert(alignedVaddr, TlbEntry(
++                        TlbEntry newEntry(
+                                 p->pTable->pid(), alignedVaddr, pte->paddr,
+                                 pte->flags & EmulationPageTable::Uncacheable,
+-                                pte->flags & EmulationPageTable::ReadOnly),
+-                                pcid);
++                                pte->flags & EmulationPageTable::ReadOnly);
++                        // One TLB entry covers one emulated page, whatever
++                        // its size (Process.page_size).
++                        newEntry.logBytes = floorLog2(p->pTable->pageSize());
++                        entry = insert(alignedVaddr, newEntry, pcid);
+                     }
+                     DPRINTF(TLB, "Miss was serviced.\n");
+                 }
+@@ -581,12 +590,30 @@ TLB::translateTiming(const RequestPtr &req, ThreadContext *tc,
+     BaseMMU::Mode orig_mode = mode;
+     if (req->isCacheClean())
+         mode = BaseMMU::Read;
++    seMiss = seFault = false;
+     Fault fault =
+         TLB::translate(req, tc, translation, mode, delayedResponse, true);
+-    if (!delayedResponse)
+-        translation->finish(fault, req, tc, orig_mode);
+-    else
++    if (delayedResponse) {
+         translation->markDelayed();
++        return;
++    }
++    // In syscall-emulation mode a TLB miss is serviced from the emulated
++    // page table in zero simulated time.  Optionally charge a page-walk
++    // penalty (and a page-fault penalty) by delaying the response, exactly
++    // as a hardware walker would in full-system mode.
++    Cycles penalty((seMiss ? uint64_t(missLatency) : 0) +
++                   (seFault ? uint64_t(faultLatency) : 0));
++    if (!FullSystem && penalty > 0) {
++        stats.penaltyCycles += uint64_t(penalty);
++        translation->markDelayed();
++        schedule(new EventFunctionWrapper(
++                     [translation, fault, req, tc, orig_mode] {
++                         translation->finish(fault, req, tc, orig_mode);
++                     }, name() + ".sePenalty", true),
++                 walker->clockEdge(penalty));
++        return;
++    }
++    translation->finish(fault, req, tc, orig_mode);
+ }
+ 
+ Walker *
+@@ -608,7 +635,11 @@ TLB::TlbStats::TlbStats(statistics::Group *parent)
+       ADD_STAT(wrMisses, statistics::units::Count::get(),
+                "TLB misses on write requests"),
+       ADD_STAT(exMisses, statistics::units::Count::get(),
+-               "TLB misses on execute (instr) requests")
++               "TLB misses on execute (instr) requests"),
++      ADD_STAT(pageFaults, statistics::units::Count::get(),
++               "SE mode: first-touch page faults (page not yet mapped)"),
++      ADD_STAT(penaltyCycles, statistics::units::Cycle::get(),
++               "SE mode: cycles charged for TLB miss / page fault penalties")
+ {
+ }
+ 
+diff --git a/src/arch/x86/tlb.hh b/src/arch/x86/tlb.hh
+index efdf5c7140..f5062d4b41 100644
+--- a/src/arch/x86/tlb.hh
++++ b/src/arch/x86/tlb.hh
+@@ -109,6 +109,14 @@ namespace X86ISA
+ 
+         AddrRange m5opRange;
+ 
++        /** SE mode: penalty charged per TLB miss / per first-touch page
++         *  fault on timing translations (0 = stock gem5 behaviour). */
++        const Cycles missLatency;
++        const Cycles faultLatency;
++        /** Set by translate() so translateTiming() knows what happened. */
++        bool seMiss = false;
++        bool seFault = false;
++
+         struct TlbStats : public statistics::Group
+         {
+             TlbStats(statistics::Group *parent);
+@@ -119,6 +127,10 @@ namespace X86ISA
+             statistics::Scalar rdMisses;
+             statistics::Scalar wrMisses;
+             statistics::Scalar exMisses;
++            /** SE mode: first-touch page faults (page not yet mapped). */
++            statistics::Scalar pageFaults;
++            /** SE mode: total penalty cycles charged for misses/faults. */
++            statistics::Scalar penaltyCycles;
+         } stats;
+ 
+         Fault translateInt(bool read, RequestPtr req, ThreadContext *tc);
+-- 
+2.39.5 (Apple Git-154)
+

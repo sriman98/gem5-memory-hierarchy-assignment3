@@ -1,0 +1,216 @@
+From 772ad06b171ed4f5a03299ea08c93ff91270d5a5 Mon Sep 17 00:00:00 2001
+From: Sriman Cherukuru <srimancherukuru@Sriman-macbook.local>
+Date: Sun, 13 Sep 2026 19:33:47 -0500
+Subject: [PATCH 1/2] sim,arch-x86: make the SE-mode page size a Process
+ parameter (large-page emulation)
+
+Add Process.page_size (default 4KiB).  The x86-64 process model builds its
+EmulationPageTable with that page size, keeps brk/stack/mmap/vsyscall
+boundaries aligned to it, reports it through AT_PAGESZ, and the x86 TLB
+installs one entry per emulated page (logBytes from the page table) with a
+trie key of page-number width in SE mode as well as FS mode.  Physical
+memory is still allocated from the 4 KiB page pool; Process::allocateMem
+takes a large page of slack and aligns the physical start so that a TLB
+entry can cover a whole large page.  mmap() now treats an unaligned start
+address without MAP_FIXED as the hint Linux says it is instead of failing
+(musl's allocator hints at 4 KiB-aligned addresses).  Lets SE-mode
+experiments compare 4 KiB, 64 KiB, 2 MiB ... pages without a full-system
+kernel.
+
+Assignment 3 (memory hierarchy), Sriman Cherukuru, Sep 2026.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
+---
+ src/arch/x86/process.cc | 28 ++++++++++++++++++++--------
+ src/sim/Process.py      |  7 +++++++
+ src/sim/process.cc      | 15 ++++++++++++++-
+ src/sim/se_workload.cc  |  2 +-
+ src/sim/se_workload.hh  |  7 +++++++
+ src/sim/syscall_emul.hh |  7 +++++++
+ 6 files changed, 56 insertions(+), 10 deletions(-)
+
+diff --git a/src/arch/x86/process.cc b/src/arch/x86/process.cc
+index 89373cf0f0..16988c2bb6 100644
+--- a/src/arch/x86/process.cc
++++ b/src/arch/x86/process.cc
+@@ -52,6 +52,7 @@
+ #include "arch/x86/se_workload.hh"
+ #include "arch/x86/types.hh"
+ #include "base/loader/elf_object.hh"
++#include "base/intmath.hh"
+ #include "base/loader/object_file.hh"
+ #include "base/logging.hh"
+ #include "base/trace.hh"
+@@ -88,9 +89,13 @@ X86Process::X86Process(const ProcessParams &params,
+                             new ArchPageTable(params.name, params.pid,
+                                               params.system, PageBytes)) :
+                     new EmulationPageTable(params.name, params.pid,
+-                                           PageBytes),
++                                           params.page_size),
+             objFile)
+ {
++    fatal_if(params.page_size < PageBytes || !isPowerOf2(params.page_size),
++             "page_size must be a power of two >= %d", PageBytes);
++    fatal_if(params.useArchPT && params.page_size != PageBytes,
++             "useArchPT builds real x86 page tables and needs 4 KiB pages");
+ }
+ 
+ void X86Process::clone(ThreadContext *old_tc, ThreadContext *new_tc,
+@@ -105,16 +110,20 @@ X86_64Process::X86_64Process(const ProcessParams &params,
+                              loader::ObjectFile *objFile) :
+     X86Process(params, objFile)
+ {
++    // Every region boundary is kept aligned to the (possibly large)
++    // emulated page size so that page-table mappings never straddle a page.
++    const Addr page_size = pTable->pageSize();
+     vsyscallPage.base = 0xffffffffff600000ULL;
+-    vsyscallPage.size = PageBytes;
++    vsyscallPage.size = page_size;
+     vsyscallPage.vtimeOffset = 0x400;
+     vsyscallPage.vgettimeofdayOffset = 0x0;
+ 
+-    Addr brk_point = roundUp(image.maxAddr(), PageBytes);
+-    Addr stack_base = 0x7FFFFFFFF000ULL;
+-    Addr max_stack_size = params.maxStackSize;
++    Addr brk_point = roundUp(image.maxAddr(), page_size);
++    Addr stack_base = roundDown(0x7FFFFFFFF000ULL, page_size);
++    Addr max_stack_size = roundUp(params.maxStackSize, page_size);
+     Addr next_thread_stack_base = stack_base - max_stack_size;
+-    Addr mmap_end = std::min<Addr>(0x7FFFF7FFF000ULL, next_thread_stack_base);
++    Addr mmap_end = roundDown(
++        std::min<Addr>(0x7FFFF7FFF000ULL, next_thread_stack_base), page_size);
+ 
+     memState = std::make_shared<MemState>(
+             this, brk_point, stack_base, max_stack_size,
+@@ -128,6 +137,8 @@ I386Process::I386Process(const ProcessParams &params,
+ {
+     if (kvmInSE)
+         panic("KVM CPU model does not support 32 bit processes");
++    fatal_if(pTable->pageSize() != PageBytes,
++             "32-bit processes support only the default 4 KiB page size");
+ 
+     _gdtStart = 0xffffd000ULL;
+     _gdtSize = PageBytes;
+@@ -156,7 +167,7 @@ X86_64Process::initState()
+     if (useForClone)
+         return;
+ 
+-    argsInit(PageBytes);
++    argsInit(pTable->pageSize());
+ 
+     // Set up the vsyscall page for this process.
+     memState->mapRegion(vsyscallPage.base, vsyscallPage.size, "vsyscall");
+@@ -858,7 +869,8 @@ X86Process::argsInit(int pageSize,
+         // XXX Figure out what these should be
+         auxv.emplace_back(gem5::auxv::Hwcap, features);
+         // The system page size
+-        auxv.emplace_back(gem5::auxv::Pagesz, X86ISA::PageBytes);
++        // Tell the C library the page size it is really running on.
++        auxv.emplace_back(gem5::auxv::Pagesz, pTable->pageSize());
+         // Frequency at which times() increments
+         // Defined to be 100 in the kernel source.
+         auxv.emplace_back(gem5::auxv::Clktck, 100);
+diff --git a/src/sim/Process.py b/src/sim/Process.py
+index d27a009e1c..ed2a895e47 100644
+--- a/src/sim/Process.py
++++ b/src/sim/Process.py
+@@ -52,6 +52,13 @@ class Process(SimObject):
+     )
+     kvmInSE = Param.Bool("false", "initialize the process for KvmCPU in SE")
+     maxStackSize = Param.MemorySize("64MiB", "maximum size of the stack")
++    page_size = Param.MemorySize(
++        "4KiB",
++        "SE mode: page size of the emulated page table (power of two, at "
++        "least the ISA's base page). Larger values emulate large/huge pages: "
++        "the process is mapped, and TLB entries are installed, in pages of "
++        "this size. Currently honoured by the x86-64 process model.",
++    )
+     zeroPages = Param.Bool(
+         True,
+         "ensure all allocated pages are zero-filled. glibc malloc generally "
+diff --git a/src/sim/process.cc b/src/sim/process.cc
+index fc9d4890a8..6e0681beea 100644
+--- a/src/sim/process.cc
++++ b/src/sim/process.cc
+@@ -337,8 +337,21 @@ Process::allocateMem(Addr vaddr, int64_t size, bool clobber)
+     }
+ 
+     const int npages = divCeil(size, page_size);
+-    const Addr paddr = seWorkload->allocPhysPages(npages);
+     const Addr pages_size = npages * page_size;
++    // The physical page pool hands out ISA base pages (4 KiB on x86).  When
++    // the emulated page table uses larger pages, take enough base pages for
++    // the whole region plus one large page of slack and start the mapping at
++    // a large-page-aligned physical address, so that a single TLB entry
++    // (paddr | page offset) can cover each large page.
++    const Addr sys_page = seWorkload->pageBytes();
++    Addr paddr;
++    if (page_size <= sys_page) {
++        paddr = seWorkload->allocPhysPages(npages);
++    } else {
++        const int ratio = page_size / sys_page;
++        const Addr raw = seWorkload->allocPhysPages(npages * ratio + ratio - 1);
++        paddr = roundUp(raw, page_size);
++    }
+     pTable->map(page_addr, paddr, pages_size,
+                 clobber ? EmulationPageTable::Clobber :
+                           EmulationPageTable::MappingFlags(0));
+diff --git a/src/sim/se_workload.cc b/src/sim/se_workload.cc
+index 2b64c9bba8..bcd2ac6ebc 100644
+--- a/src/sim/se_workload.cc
++++ b/src/sim/se_workload.cc
+@@ -36,7 +36,7 @@ namespace gem5
+ {
+ 
+ SEWorkload::SEWorkload(const Params &p, Addr page_shift) :
+-    Workload(p), memPools(page_shift)
++    Workload(p), memPools(page_shift), _pageShift(page_shift)
+ {}
+ 
+ void
+diff --git a/src/sim/se_workload.hh b/src/sim/se_workload.hh
+index 9a8b790d38..129c1fdf87 100644
+--- a/src/sim/se_workload.hh
++++ b/src/sim/se_workload.hh
+@@ -41,6 +41,9 @@ class SEWorkload : public Workload
+     /** Memory allocation objects for all physical memories in the system. */
+     MemPools memPools;
+ 
++    /** log2 of the physical page pool's allocation unit (the ISA base page). */
++    Addr _pageShift;
++
+   public:
+     using Params = SEWorkloadParams;
+ 
+@@ -89,6 +92,10 @@ class SEWorkload : public Workload
+     // For now, assume the only type of events are system calls.
+     void event(ThreadContext *tc) override { syscall(tc); }
+ 
++    /** Physical pages are handed out in units of this many bytes. */
++    Addr pageShift() const { return _pageShift; }
++    Addr pageBytes() const { return Addr(1) << _pageShift; }
++
+     Addr allocPhysPages(int npages, int pool_id=0);
+     void deallocPhysPage(Addr paddr, int pool_id=0);
+     Addr memSize(int pool_id=0) const;
+diff --git a/src/sim/syscall_emul.hh b/src/sim/syscall_emul.hh
+index b7a7e45945..b798295061 100644
+--- a/src/sim/syscall_emul.hh
++++ b/src/sim/syscall_emul.hh
+@@ -2042,6 +2042,13 @@ mmapFunc(SyscallDesc *desc, ThreadContext *tc,
+     auto p = tc->getProcessPtr();
+     Addr page_bytes = p->pTable->pageSize();
+ 
++    // Without MAP_FIXED the start address is only a hint, which Linux is
++    // free to ignore; do the same for a hint that is not aligned to the
++    // (possibly large) emulated page size instead of failing with EINVAL.
++    // musl's allocator, for example, hints at 4 KiB-aligned addresses.
++    if (!(tgt_flags & OS::TGT_MAP_FIXED) && (start & (page_bytes - 1)))
++        start = 0;
++
+     if (start & (page_bytes - 1) ||
+         offset & (page_bytes - 1) ||
+         (tgt_flags & OS::TGT_MAP_PRIVATE &&
+-- 
+2.39.5 (Apple Git-154)
+
