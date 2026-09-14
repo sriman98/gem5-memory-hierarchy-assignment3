@@ -1,0 +1,20 @@
+#!/bin/zsh
+# Result-independent Terminal.app screenshots for the Part 2 report (raw captures -> report/shots/raw).
+R=~/git/gem5-memory-hierarchy-assignment3; S=$R/tools/shot.sh; O=$R/report/shots/raw; cd $R
+FONT=12 $S $O/fig_gem5_branch.png 24 118 1 "cd ~/git/gem5 && git branch --show-current && git log --oneline -4 && git diff HEAD~2 --stat -- src/sim/Process.py src/sim/se_workload.hh src/sim/se_workload.cc src/sim/process.cc src/sim/syscall_emul.hh src/arch/x86 && ls -la build/X86/gem5.opt"
+FONT=12 $S $O/fig_rebuild.png 12 118 1 "tail -5 results/logs/gem5_rebuild_patches.log"
+FONT=12 $S $O/fig_make.png 26 118 1 "cd workloads && make -B 2>&1 | cut -c1-116 && ls -la ../bin | cut -c1-90"
+FONT=10 $S $O/fig_config_opts.png 62 118 1 "sed -n '/^g = parser.add_argument_group(\"core\")/,/^args = parser.parse_args()/p' configs/memhier_config.py"
+FONT=10 $S $O/fig_config_caches.png 56 118 1 "sed -n '/^# -* helpers/,/^system.cpu.dcache.cpu_side/p' configs/memhier_config.py"
+FONT=10 $S $O/fig_config_system.png 58 118 1 "sed -n '/^# Optional victim buffer/,\$p' configs/memhier_config.py"
+FONT=10 $S $O/fig_patch_tlb.png 48 118 1 "sed -n '/^TLB::translateTiming/,/^}/p' ~/git/gem5/src/arch/x86/tlb.cc"
+FONT=11 $S $O/fig_patch_pagesize.png 44 118 1 "git -C ~/git/gem5 show HEAD~1 --stat | tail -9; git -C ~/git/gem5 show HEAD~1 -- src/sim/Process.py | grep '^[+]' | grep -v '^+++'; grep -n -B3 -A13 'sys_page = seWorkload' ~/git/gem5/src/sim/process.cc"
+FONT=12 $S $O/fig_hello_stock.png 18 118 1 "head -1 results/runs/stock_default_hello/cmdline.txt | cut -c1-116; echo; grep -v '^\$' results/runs/stock_default_hello/run.log | grep -v '^warn\|^info' | cut -c1-116"
+FONT=12 $S $O/fig_hello_stats.png 18 118 1 "grep -E '^(simTicks|simInsts|system.cpu.numCycles|system.cpu.cpi|system.cpu.dcache.overall(Accesses|Hits|Misses|MissRate|AvgMissLatency)::total|system.cpu.icache.overall(Misses|MissRate)::total|system.l2.overall(Accesses|Misses|MissRate)::total)' results/runs/stock_default_hello/stats.txt | cut -c1-116"
+FONT=12 $S $O/fig_checksums.png 22 118 1 "echo '--- native (Apple M-series, clang -O2):'; cat results/native_checksums.txt; echo; echo '--- gem5 X86 TimingSimpleCPU, default caches (results/runs/base_default_*/run.log):'; for w in hello matmul matmulb stream stride chase pagewalk; do grep -h -E '^(Hello|matmul|stream|stride|chase|pagewalk)' results/runs/base_default_\$w/run.log; done"
+FONT=12 $S $O/fig_stats_matmul.png 28 118 1 "grep -E '^(simInsts|system.cpu.numCycles|system.cpu.cpi|system.cpu.dcache.overall(Accesses|Hits|Misses|MissRate|AvgMissLatency)::total|system.cpu.icache.overall(Accesses|Misses|MissRate)::total|system.l2.overall(Accesses|Hits|Misses|MissRate|AvgMissLatency)::total|system.mem_ctrl.readReqs|system.cpu.mmu.dtb.(rdAccesses|rdMisses|wrMisses|pageFaults))' results/runs/base_default_matmul/stats.txt | cut -c1-116"
+FONT=11 $S $O/fig_parse_base.png 24 132 1 "python3 scripts/parse_stats.py stock base 2>/dev/null | cut -c1-130"
+FONT=12 $S $O/fig_pf_stats.png 22 118 1 "for r in pf_none-none_stream pf_stride-stride_stream; do echo \"== \$r\"; grep -E '^(system.cpu.numCycles|system.cpu.dcache.overall(Misses|MissRate)::total|system.cpu.dcache.prefetcher.(pfIssued|pfUseful|pfUnused|accuracy|coverage)|system.l2.prefetcher.(pfIssued|pfUseful|accuracy))' results/runs/\$r/stats.txt | cut -c1-110; done"
+FONT=11 $S $O/fig_mmap_einval.png 20 132 1 "grep -E 'Calling (mmap|exit_group)|Returned|mmap range|memhier\] exiting' results/logs/mmap_hint_einval_64KiB_pages.log | cut -c1-130"
+FONT=12 $S $O/fig_stride_hidden.png 22 118 1 "cut -c1-116 results/logs/stride_conflicts_hidden_by_frame_allocation.log"
+FONT=12 $S $O/fig_layout_confound.png 24 118 1 "grep -E '^#|^==|MissRate|numCycles|rdMisses|pageFaults' results/logs/pagewalk_L1D_layout_confound_2way.log | cut -c1-116"
